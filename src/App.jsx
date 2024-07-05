@@ -1,6 +1,6 @@
 import { useState } from "react";
-import"./src/global.css";
-
+import "./globals.css";
+import{ ToastContainer, toast} from "react-toastify";
 export default function App() {
 
     const [listaProdutos, setProdutos] = useState([
@@ -31,43 +31,65 @@ export default function App() {
     ]);
 
 
-const[listPedidos,setPedidos] = useState([]);
-const adicionarPedido = (item) => {
-   setlistaPedidos([...listPedidos],item);
-}
-   const removerPedido = (id) => {
-    let listaAux = listaPedidos.filter((produto) => produto.id !== id);
-    setlistaPedidos(listaAux);
-   }
+    const [listPedidos, setlistaPedidos] = useState([]);
+
+    const adicionarPedido = (item) => {
+        toast ("Produto adicionado!");
+        setlistaPedidos([...listPedidos, item]);
+    }
+    const removerPedido = (id) => {
+        let removeu = false;
+        let listaAux = listPedidos.filter((produto) => {
+            if (removeu == false) {
+                if (produto.id !== id) {
+                    return produto
+                }
+                else {
+                    removeu = true;
+                    return null
+                }
+            }
+            else {
+                return produto
+            }
+        });
+        setlistaPedidos(listaAux);
+    }
 
     return (
         <div className="bloco-principal">
             <div className="bloco-produtos">
-
+                {
+                    listaProdutos.map((produto) =>
+                        <div key={produto.id}>
+                            <img src={produto.imagem} alt={produto.item} />
+                            <p>{produto.item}</p>
+                            <p>{produto.preco}</p>
+                            <button onClick={() => adicionarPedido(produto)}>QUERO</button>
+                        </div>
+                    )}
             </div>
             <div className="bloco-pedidos">
-                (
-                    listaProdutos.map((produtos) => 
-                      <div key={setProdutos.id}>
-                        <img src={setProdutos.imagem} alt={setProdutos.item}/>
-                        <p>{Produtos.item}</p>
-                        <p>{Produtos.preço}</p>
-                        <button onClick={() => adicionarPedido(produto)}>QUERO</button>
-                      </div>
-                      <tr>
-                        <td>
-                        {produto.item}
-                        </td>
-                      <td>
-                        {produto.preço}
-                      </td>
-                      <td>
-                        <button onClick={()=> removerPedido(produto.id)}>X</button>
-                      </td>
-                      </tr>
+                {
+                    listPedidos.map((pedido) =>
+                        <tr>
+                            <td>
+                                {pedido.item}
+                            </td>
+                            <td>
+                                {pedido.preço}
+                            </td>
+                            <td>
+                                <button onClick={() => removerPedido(pedido.id)}>X</button>
+                            </td>
+                        </tr>
                     )
-                )
+                }
+
+
+
             </div>
-        </div>
+            <ToastContainer/>
+        </div >
     );
 }
